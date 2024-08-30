@@ -75,6 +75,19 @@ VALUES (1, 'Task 1', 'First task description', 'Pending'),
        (2, 'Task 3', 'Third task description', 'Pending');
 
 
+**********************************
+# Conf 
+# listen from all interfaces (not recommended)
+listen_addresses = '*' 
+
+
+#let access from windows machine : sudo nano /etc/postgresql/14/main/pg_hba.conf
+host    all             all             0.0.0.0/0               md5
+
+
+#if firewall 
+sudo ufw allow 5432/tcp
+
 
 
 --------------------------------------------------------------------------------------------
