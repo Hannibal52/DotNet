@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "PbppksaNNf0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Yassi\\Documents\\github\\TaskManagerApp\\DotNet\\TaskManagerApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Yassi\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Yassi\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Yassi\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Yassi\\.nuget\\packages\\npgsql\\8.0.3\\npgsql.8.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
