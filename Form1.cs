@@ -57,6 +57,16 @@ namespace TaskManagerApp
             if (TestDatabaseConnection(username, password))
             {
                 MessageBox.Show("Login successful!");
+
+                // Hide the current login form
+                this.Hide();
+
+                // Open the TaskManagerForm and pass the username
+                TaskManagerForm taskManagerForm = new TaskManagerForm(username);
+                taskManagerForm.ShowDialog();
+
+                // After TaskManagerForm is closed, close the Login form as well
+                this.Close();
             }
             else
             {
