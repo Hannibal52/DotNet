@@ -9,8 +9,6 @@ namespace TaskManagerApp
     {
         private DataGridView dgvTasks;
         private Button btnAddTask;
-        private Button btnEditTask;
-        private Button btnDeleteTask;
         private string username;  // Champ pour stocker le nom d'utilisateur
 
         public TaskManagerForm(string username)
@@ -25,9 +23,16 @@ namespace TaskManagerApp
 
         private void InitializeComponents()
         {
+            // Bouton Ajouter une tâche
+            btnAddTask = new Button();
+            btnAddTask.Text = "Add Task";
+            btnAddTask.Location = new System.Drawing.Point(10, 10);
+            btnAddTask.Click += new EventHandler(BtnAddTask_Click);
+            this.Controls.Add(btnAddTask);
+
             // DataGridView pour afficher les tâches
             dgvTasks = new DataGridView();
-            dgvTasks.Location = new System.Drawing.Point(10, 10);
+            dgvTasks.Location = new System.Drawing.Point(10, 50);
             dgvTasks.Size = new System.Drawing.Size(760, 400);
             dgvTasks.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
             dgvTasks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -36,29 +41,27 @@ namespace TaskManagerApp
             dgvTasks.ReadOnly = true;
             dgvTasks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            // Bouton Ajouter une tâche
-            btnAddTask = new Button();
-            btnAddTask.Text = "Add Task";
-            btnAddTask.Location = new System.Drawing.Point(10, 420);
-            btnAddTask.Click += new EventHandler(BtnAddTask_Click);
+            // Ajouter une colonne de bouton pour la mise à jour
+            DataGridViewButtonColumn btnUpdateColumn = new DataGridViewButtonColumn();
+            btnUpdateColumn.Name = "Update";
+            btnUpdateColumn.Text = "Update";
+            btnUpdateColumn.UseColumnTextForButtonValue = true; // Affiche "Update" dans tous les boutons
+            btnUpdateColumn.Width = 60; // Réduire la largeur de la colonne Update
+            dgvTasks.Columns.Add(btnUpdateColumn);
 
-            // Bouton Modifier une tâche
-            btnEditTask = new Button();
-            btnEditTask.Text = "Edit Task";
-            btnEditTask.Location = new System.Drawing.Point(110, 420);
-            btnEditTask.Click += new EventHandler(BtnEditTask_Click);
-
-            // Bouton Supprimer une tâche
-            btnDeleteTask = new Button();
-            btnDeleteTask.Text = "Delete Task";
-            btnDeleteTask.Location = new System.Drawing.Point(210, 420);
-            btnDeleteTask.Click += new EventHandler(BtnDeleteTask_Click);
+            // Ajouter une colonne de bouton pour la suppression
+            DataGridViewButtonColumn btnDeleteColumn = new DataGridViewButtonColumn();
+            btnDeleteColumn.Name = "Delete";
+            btnDeleteColumn.Text = "Delete";
+            btnDeleteColumn.UseColumnTextForButtonValue = true; // Affiche "Delete" dans tous les boutons
+            btnDeleteColumn.Width = 60; // Réduire la largeur de la colonne Delete
+            dgvTasks.Columns.Add(btnDeleteColumn);
 
             // Ajouter les composants au formulaire
             this.Controls.Add(dgvTasks);
-            this.Controls.Add(btnAddTask);
-            this.Controls.Add(btnEditTask);
-            this.Controls.Add(btnDeleteTask);
+
+            // Associer l'événement CellClick pour gérer les clics sur les boutons dans le DataGridView
+            dgvTasks.CellClick += DgvTasks_CellClick;
         }
 
         private void LoadTasks()
@@ -99,23 +102,69 @@ namespace TaskManagerApp
             }
         }
 
+        private void DgvTasks_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Vérifie que la cellule cliquée est bien une cellule de bouton
+            if (e.RowIndex >= 0 && (e.ColumnIndex == dgvTasks.Columns["Update"].Index || e.ColumnIndex == dgvTasks.Columns["Delete"].Index))
+            {
+                int taskId = Convert.ToInt32(dgvTasks.Rows[e.RowIndex].Cells["id"].Value);
+
+                if (e.ColumnIndex == dgvTasks.Columns["Update"].Index)
+                {
+                    // Ouvrir un formulaire de mise à jour avec les informations de la tâche sélectionnée
+                    TaskUpdateForm updateForm = new TaskUpdateForm(taskId, username);
+                    updateForm.ShowDialog();
+                    LoadTasks(); // Recharger les tâches après la mise à jour
+                }
+                else if (e.ColumnIndex == dgvTasks.Columns["Delete"].Index)
+                {
+                    // Demande de confirmation de suppression
+                    var result = MessageBox.Show("Are you sure you want to delete this task?", "Delete Task", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        DeleteTask(taskId);
+                        LoadTasks(); // Recharger les tâches après la suppression
+                    }
+                }
+            }
+        }
+
+        private void DeleteTask(int taskId)
+        {
+            try
+            {
+                string host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+                string dbUsername = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+                string dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "password";
+                string database = Environment.GetEnvironmentVariable("DB_NAME") ?? "postgres";
+
+                string connectionString = $"Host={host};Username={dbUsername};Password={dbPassword};Database={database}";
+
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = "DELETE FROM tasks WHERE id = @taskId";
+                    using (var cmd = new NpgsqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("taskId", taskId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while deleting the task: {ex.Message}");
+            }
+        }
+
         // Handlers pour les boutons (à implémenter)
         private void BtnAddTask_Click(object sender, EventArgs e)
         {
-            // Logique pour ajouter une tâche
-            MessageBox.Show("Add Task button clicked.");
+            TaskAddForm addForm = new TaskAddForm(username);
+            addForm.ShowDialog();
+            LoadTasks(); // Recharger les tâches après l'ajout
         }
 
-        private void BtnEditTask_Click(object sender, EventArgs e)
-        {
-            // Logique pour modifier une tâche
-            MessageBox.Show("Edit Task button clicked.");
-        }
-
-        private void BtnDeleteTask_Click(object sender, EventArgs e)
-        {
-            // Logique pour supprimer une tâche
-            MessageBox.Show("Delete Task button clicked.");
-        }
     }
 }
