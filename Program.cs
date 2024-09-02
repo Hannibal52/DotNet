@@ -12,10 +12,10 @@ namespace TaskManagerApp
             Console.WriteLine("Program started.");
 
             // Retrieve connection information from environment variables
-            string host = Environment.GetEnvironmentVariable("DB_HOST") ?? throw new InvalidOperationException("DB_HOST is not set");
-            string username = Environment.GetEnvironmentVariable("DB_USER") ?? throw new InvalidOperationException("DB_USER is not set");
-            string password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
-            string database = Environment.GetEnvironmentVariable("DB_NAME") ?? throw new InvalidOperationException("DB_NAME is not set");
+            string host = "10.10.10.132";  
+            string username = "taskuser";
+            string password = "P@ssw0rd";
+            string database = "taskmanagerdb";
 
             Console.WriteLine("Environment variables loaded.");
 
