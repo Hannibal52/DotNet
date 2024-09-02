@@ -61,10 +61,12 @@ namespace TaskManagerApp
             // Charger les détails de la tâche sélectionnée
             try
             {
-                string host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-                string dbUsername = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
-                string dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "password";
-                string database = Environment.GetEnvironmentVariable("DB_NAME") ?? "postgres";
+
+                string host = "10.10.10.132";
+                string dbUsername = "taskuser";
+                string dbPassword = "P@ssw0rd";
+                string database = "taskmanagerdb";
+
 
                 string connectionString = $"Host={host};Username={dbUsername};Password={dbPassword};Database={database}";
 
@@ -100,10 +102,10 @@ namespace TaskManagerApp
             // Enregistrer les modifications de la tâche
             try
             {
-                string host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-                string dbUsername = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
-                string dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "password";
-                string database = Environment.GetEnvironmentVariable("DB_NAME") ?? "postgres";
+                string host = "10.10.10.132";
+                string dbUsername = "taskuser";
+                string dbPassword = "P@ssw0rd";
+                string database = "taskmanagerdb";
 
                 string connectionString = $"Host={host};Username={dbUsername};Password={dbPassword};Database={database}";
 
